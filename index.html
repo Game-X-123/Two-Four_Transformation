@@ -179,7 +179,7 @@
             box-shadow: 0 0 25px rgba(52, 152, 219, 0.7);
         }
         
-        .action-bbuttons {
+        .action-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
@@ -214,6 +214,11 @@
         
         #reset-btn {
             background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: #fff;
+        }
+        
+        #new-game-btn {
+            background: linear-gradient(to right, #56ab2f, #a8e063);
             color: #fff;
         }
         
@@ -384,6 +389,16 @@
                 font-size: 2.5rem;
                 margin-bottom: 15px;
             }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .action-btn {
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -482,7 +497,7 @@
     <div class="success-banner" id="success-banner">
         <i>✓</i>
         <span>恭喜！你已成功将操作盘面转换为目标盘面！</span>
-        <small>请按"重置游戏"按钮开始新的挑战</small>
+        <small>请按"新的游戏"按钮开始新的挑战</small>
     </div>
 
     <div class="container">
@@ -490,13 +505,16 @@
             <h1>二四变换</h1>
             <p class="subtitle">选择矩形区域进行运算，达到目标状态</p>
             
-            <!-- 统一的按钮区域 -->
+            <!-- 按钮区域 -->
             <div class="action-buttons">
                 <button class="action-btn" id="undo-btn">
                     <i>↺</i> 撤回操作
                 </button>
                 <button class="action-btn" id="reset-btn">
                     <i>⟳</i> 重置游戏
+                </button>
+                <button class="action-btn" id="new-game-btn">
+                    <i>🆕</i> 新的游戏
                 </button>
             </div>
         </header>
@@ -575,6 +593,7 @@
             const currentStatusEl = document.getElementById('current-status');
             const undoBtn = document.getElementById('undo-btn');
             const resetBtn = document.getElementById('reset-btn');
+            const newGameBtn = document.getElementById('new-game-btn');
             const successBanner = document.getElementById('success-banner'); // 中央横幅元素
             const statusInfo = document.getElementById('status-info');
             
@@ -595,20 +614,20 @@
             function createBoards() {
                 // 操作盘面初始状态模板（5行5列）
                 const operationBoardTemplate = [
-                    [5, 6, 5, 6, 5],
-                    [4, 5, 4, 5, 4],
-                    [3, 4, 3, 4, 3],
-                    [2, 3, 2, 3, 2],
-                    [1, 2, 1, 2, 1]
+                    [2, 5, 4, 1, 3],
+                    [1, 4, 5, 3, 2],
+                    [4, 2, 3, 5, 1],
+                    [3, 1, 2, 4, 5],
+                    [5, 3, 1, 2, 4]
                 ];
                 
                 // 目标盘面状态模板（5行5列）
                 const targetBoardTemplate = [
-                    [10, 35, 50, 55, 55],
-                    [10, 35, 50, 44, 44],
-                    [2, 2, 6, 1, 1],
-                    [3, 6, 6, 2, 1],
-                    [2, 6, 6, 2, 1]
+                    [2, 2, 2, 12, 2],
+                    [2, 2, 2, 12, 6],
+                    [12, 24, 24, 47, 47],
+                    [7, 21, 23, 41, 43],
+                    [7, 21, 23, 41, 4]
                 ];
                 
                 // 使用模板初始化操作盘面（深拷贝）
@@ -622,6 +641,48 @@
                 
                 // 创建目标盘面表格
                 createTable(targetBoardEl, targetBoard, false);
+            }
+            
+            // 创建新游戏
+            function createNewGame() {
+                // 操作盘面初始状态模板（5行5列）
+                const operationBoard = [
+                    [5, 6, 5, 6, 5],
+                    [4, 5, 4, 5, 4],
+                    [3, 4, 3, 4, 3],
+                    [2, 3, 2, 3, 2],
+                    [1, 2, 1, 2, 1]
+                ];
+                
+                // 目标盘面状态模板（5行5列）
+                const targetBoard = [
+                    [10, 35, 50, 55, 55],
+                    [10, 35, 50, 44, 44],
+                    [2, 2, 6, 1, 1],
+                    [3, 6, 6, 2, 1],
+                    [2, 6, 6, 2, 1]
+                ];
+                
+                // 创建操作盘面表格
+                createTable(operationBoardEl, operationBoard, true);
+                
+                // 创建目标盘面表格
+                createTable(targetBoardEl, targetBoard, false);
+                
+                // 清除选择
+                clearSelection();
+                resetOperationSelection();
+                
+                // 重置历史记录
+                historyStack = [];
+                saveCurrentState();
+                
+                // 隐藏成功消息
+                successBanner.style.display = 'none';
+                gameWon = false;
+                
+                // 更新状态
+                updateStatus('新游戏已开始！操作盘面和目标盘面已重置为1');
             }
             
             // 创建表格函数
@@ -661,6 +722,7 @@
                 // 动作按钮事件
                 undoBtn.addEventListener('click', undoOperation);
                 resetBtn.addEventListener('click', resetGame);
+                newGameBtn.addEventListener('click', createNewGame);
             }
             
             // 处理单元格点击事件
