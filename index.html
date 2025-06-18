@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>矩阵运算游戏</title>
+    <title>二四变换</title>
     <style>
         * {
             box-sizing: border-box;
@@ -354,14 +354,71 @@
                 font-size: 0.9rem;
             }
         }
+        /* 移动端布局 */
+        @media (max-width: 768px) {
+            .mobile-action-buttons {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .action-buttons.desktop-only {
+                display: none;
+            }
+            
+            .game-area {
+                flex-direction: column;
+                order: 1; /* 设置游戏区域为主列 */
+            }
+            
+            .controls-area.desktop-only {
+                display: none; /* 隐藏桌面端控制区域 */
+            }
+            
+            #mobile-controls {
+                display: block; /* 显示移动端控制区域 */
+                margin: 20px 0;
+                order: 2; /* 设置控制区域在中间位置 */
+            }
+            
+            .board-section {
+                order: 3; /* 目标盘面放在最后 */
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-action-buttons {
+                display: none;
+            }
+            
+            .action-buttons.desktop-only {
+                display: flex;
+            }
+            
+            #mobile-controls {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>矩阵运算游戏</h1>
+            <h1>二四变换</h1>
             <p class="subtitle">选择矩形区域进行运算，达到目标状态</p>
         </header>
+
+        <!-- 移动端操作按钮 -->
+        <div class="mobile-action-buttons">
+            <button class="action-btn" id="undo-mobile-btn">
+                <i>↺</i> 撤回操作
+            </button>
+            <button class="action-btn" id="reset-mobile-btn">
+                <i>⟳</i> 重置游戏
+            </button>
+        </div>
         
         <div class="game-area">
             <div class="board-section">
@@ -370,8 +427,8 @@
                     <table class="game-board operation-board" id="operation-board"></table>
                 </div>
                 
-                <!-- Mobile controls placement -->
-                <div class="mobile-only" id="mobile-controls">
+                <!-- 移动端控制区域 - 放在目标盘面区域上方 -->
+                <div id="mobile-controls">
                     <div class="controls-area">
                         <div class="controls-title">选择运算操作</div>
                         <div class="operation-buttons">
@@ -393,8 +450,8 @@
             </div>
         </div>
         
-        <!-- Desktop controls placement -->
-        <div class="controls-area">
+        <!-- 桌面端控制区域 -->
+        <div class="controls-area desktop-only">
             <div class="controls-title">选择运算操作</div>
             <div class="operation-buttons">
                 <div class="operation-btn" id="add-btn-desktop" title="加法运算">+</div>
@@ -405,7 +462,8 @@
             <div id="warning-desktop"></div>
         </div>
         
-        <div class="action-buttons">
+        <!-- 桌面端操作按钮 -->
+        <div class="action-buttons desktop-only">
             <button class="action-btn" id="undo-btn">
                 <i>↺</i> 撤回操作
             </button>
@@ -429,7 +487,7 @@
         </div>
         
         <footer>
-            <p>矩阵运算游戏 | 每次操作后自动清除选择</p>
+            <p>二四变换 | made by SX</p>
         </footer>
     </div>
 
